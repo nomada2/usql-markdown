@@ -1,4 +1,12 @@
 
+---
+services: data-lake-analytics
+platforms: dotnet
+author: saveenr-msft
+---
+
+# U-SQL: Markdown format outputter
+
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
