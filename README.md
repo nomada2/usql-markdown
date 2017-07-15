@@ -1,4 +1,3 @@
-
 ---
 services: data-lake-analytics
 platforms: dotnet
