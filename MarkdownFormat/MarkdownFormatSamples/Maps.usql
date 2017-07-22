@@ -11,7 +11,7 @@ SELECT * FROM ( VALUES
 ("Cherry" , 400, "Web" ),
 ("Durian" , 500, "Web" ) )
 AS T(Query,Latency,Vertical);
-
+  
 @employees =
 SELECT * FROM ( VALUES
 (1, "Noah", "Engineering", 100, 10000),
@@ -42,7 +42,7 @@ OUTPUT @querylog
     USING new MVADemo.MarkdownOutputter();
 */
 
-REFERENCE ASSEMBLY [master].[DocumentOutputers];
+REFERENCE ASSEMBLY [master].MarkdownFormat;
 
 
 @cities =
@@ -100,9 +100,9 @@ AS T(Category, Dict);
 
 OUTPUT @output
     TO "/cities.md"
-    USING new DocumentOutputers.MarkdownOutputer(outputHeader: true, outputHeaderType: true);
+    USING new MarkdownFormat.MarkdownOutputter(outputHeader: true, outputHeaderType: true);
 
 OUTPUT @xxx
     TO "/xxx.md"
-    USING new DocumentOutputers.MarkdownOutputer(outputHeader: true, outputHeaderType: true);
+    USING new MarkdownFormat.MarkdownOutputter(outputHeader: true, outputHeaderType: true);
     

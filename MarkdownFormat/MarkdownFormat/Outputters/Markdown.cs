@@ -12,12 +12,16 @@ namespace MarkdownFormat
         private int row_count;
         public bool OutputHeader;
         public bool OutputHeaderType;
+        public bool EncodeHtml;
+        public bool ComplexTypeParameters;
 
-        public MarkdownOutputter( bool outputHeader = false, bool outputHeaderType = false)
+        public MarkdownOutputter( bool outputHeader = false, bool outputHeaderType = false, bool encodeHtml = false, bool complexTypeParameters = false)
         {
             row_count = 0;
             this.OutputHeader = outputHeader;
             this.OutputHeaderType = outputHeaderType;
+            this.EncodeHtml = encodeHtml;
+            this.ComplexTypeParameters = complexTypeParameters;
         }
 
         public override void Close()
@@ -161,8 +165,19 @@ namespace MarkdownFormat
                     // Handling NULL values--keeping them empty
                     val = "NullReferenceException";
                 }
+
+
                 streamWriter.Write(" ");
-                streamWriter.Write(val);
+
+                if (this.EncodeHtml)
+                {
+                    var encoded_val = System.Web.HttpUtility.HtmlEncode(val);
+                    streamWriter.Write(encoded_val);
+                }
+                else
+                {
+                    streamWriter.Write(val);
+                }
                 streamWriter.Write(" ");
                 streamWriter.Write("|");
             }
@@ -172,16 +187,21 @@ namespace MarkdownFormat
             this.row_count++;
         }
 
-        private static string _Get_val_from_usqlarray<T>(USQLINTERFACES.IRow row, USQLINTERFACES.IColumn col, string val)
+        private string _Get_val_from_usqlarray<T>(USQLINTERFACES.IRow row, USQLINTERFACES.IColumn col, string val)
         {
             var arr = row.Get<USQLTYPES.SqlArray<T>>(col.Name);
 
             if (arr != null)
             {
                 var sb = new System.Text.StringBuilder();
-                sb.Append("SqlArray<");
-                sb.Append(get_usql_type_name(typeof(T)));
-                sb.Append(">{ ");
+                sb.Append("SqlArray");
+                if (this.ComplexTypeParameters)
+                {
+                    sb.Append("<");
+                    sb.Append(get_usql_type_name(typeof(T)));
+                    sb.Append(">");
+                }
+                sb.Append("{ ");
 
                 for (int j = 0; j < arr.Count; j++)
                 {
@@ -205,18 +225,23 @@ namespace MarkdownFormat
             return val;
         }
 
-        private static string _Get_val_from_usqlmap<K,V>(USQLINTERFACES.IRow row, USQLINTERFACES.IColumn col, string val)
+        private string _Get_val_from_usqlmap<K,V>(USQLINTERFACES.IRow row, USQLINTERFACES.IColumn col, string val)
         {
             var map = row.Get<USQLTYPES.SqlMap<K,V>>(col.Name);
 
             if (map != null)
             {
                 var sb = new System.Text.StringBuilder();
-                sb.Append("SqlMap<");
-                sb.Append(get_usql_type_name(typeof(K)));
-                sb.Append(", ");
-                sb.Append(get_usql_type_name(typeof(V)));
-                sb.Append(">{ ");
+                sb.Append("SqlMap");
+                if (this.ComplexTypeParameters)
+                {
+                    sb.Append("<");
+                    sb.Append(get_usql_type_name(typeof(K)));
+                    sb.Append(", ");
+                    sb.Append(get_usql_type_name(typeof(V)));
+                    sb.Append(">");
+                }
+                sb.Append("{ ");
 
                 int kn = 0;
                 foreach (var key in map.Keys)
