@@ -160,6 +160,18 @@ namespace MarkdownFormat
             {
                 val = GetValueFromUsqlMap<string, long?>(row, col, opts);
             }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, float?>))
+            {
+                val = GetValueFromUsqlMap<string, float?>(row, col, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, double?>))
+            {
+                val = GetValueFromUsqlMap<string, double?>(row, col, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, decimal?>))
+            {
+                val = GetValueFromUsqlMap<string, decimal?>(row, col, opts);
+            }
             return val;
         }
 
