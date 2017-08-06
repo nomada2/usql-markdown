@@ -60,7 +60,8 @@ namespace MarkdownFormat
                     return name;
                 }
             }
-            return "UNKNOWNTYPE:" + type.FullName;
+
+            return type.FullName;
         }
 
         public static Dictionary<Type, string> ScalarTypeNameDic;
@@ -125,12 +126,12 @@ namespace MarkdownFormat
 
                 if (val==null)
                 {
-                    val = "UNKNOWNTYPE:" + UdoUtils.GetUsqlTypeDisplayName(type);
+                    val = UdoUtils.GetUsqlTypeDisplayName(type);
                 }
             }
             else
             {
-                val = "UNKNOWNTYPE:" + UdoUtils.GetUsqlTypeDisplayName(type);
+                val = UdoUtils.GetUsqlTypeDisplayName(type);
             }
             return val;
         }
@@ -341,7 +342,8 @@ namespace MarkdownFormat
                 {
                     sb.Append("<");
                     sb.Append(UdoUtils.GetUsqlTypeDisplayName(typeof(K)));
-                    sb.Append(", ");
+                    sb.Append(",");
+                    sb.Append(" ");
                     sb.Append(UdoUtils.GetUsqlTypeDisplayName(typeof(V)));
                     sb.Append(">");
                 }
@@ -352,7 +354,8 @@ namespace MarkdownFormat
                 {
                     if (kn > 0)
                     {
-                        sb.Append("; ");
+                        sb.Append(";");
+                        sb.Append(" ");
                     }
 
                     V xval = map[key];
