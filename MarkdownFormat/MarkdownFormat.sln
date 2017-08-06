@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownFormat", "MarkdownF
 EndProject
 Project("{182E2583-ECAD-465B-BB50-91101D7C24CE}") = "MarkdownFormatSamples", "MarkdownFormatSamples\MarkdownFormatSamples.usqlproj", "{6824F22A-59D4-4D15-9CC6-BBF5693C3ECD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMarkdownFormat", "TestMarkdownFormat\TestMarkdownFormat.csproj", "{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{6824F22A-59D4-4D15-9CC6-BBF5693C3ECD}.Release|x64.Build.0 = Release|x64
 		{6824F22A-59D4-4D15-9CC6-BBF5693C3ECD}.Release|x86.ActiveCfg = Release|x86
 		{6824F22A-59D4-4D15-9CC6-BBF5693C3ECD}.Release|x86.Build.0 = Release|x86
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Debug|x64.Build.0 = Debug|Any CPU
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Debug|x86.Build.0 = Debug|Any CPU
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Release|x64.ActiveCfg = Release|Any CPU
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Release|x64.Build.0 = Release|Any CPU
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Release|x86.ActiveCfg = Release|Any CPU
+		{D5F510C8-FF7C-4EAB-A72F-772FB1872D62}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

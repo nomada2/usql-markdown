@@ -1,160 +1,169 @@
 using System;
+using System.Collections.Generic;
+using Microsoft.Analytics.Types.Sql;
 
 namespace MarkdownFormat
 {
     public static class UdoUtils
     {
-        public static string get_usql_type_name(System.Type coltype)
+        public static string GetUsqlTypeDisplayName(System.Type type)
         {
-            if (coltype == typeof(string))
+            if (ScalarTypeNameDic == null)
             {
-                return "string";
+                ScalarTypeNameDic = new Dictionary<Type, string>();
+                ScalarTypeNameDic[typeof(string)] = "string";
+                ScalarTypeNameDic[typeof(char)] = "char";
+                ScalarTypeNameDic[typeof(char?)] = "char?";
+                ScalarTypeNameDic[typeof(float)] = "float";
+                ScalarTypeNameDic[typeof(float?)] = "float?";
+                ScalarTypeNameDic[typeof(double)] = "double";
+                ScalarTypeNameDic[typeof(double?)] = "double?";
+                ScalarTypeNameDic[typeof(decimal)] = "decimal";
+                ScalarTypeNameDic[typeof(decimal?)] = "decimal?";
+                ScalarTypeNameDic[typeof(int)] = "int";
+                ScalarTypeNameDic[typeof(int?)] = "int?";
+                ScalarTypeNameDic[typeof(short)] = "short";
+                ScalarTypeNameDic[typeof(short?)] = "short?";
+                ScalarTypeNameDic[typeof(byte)] = "byte";
+                ScalarTypeNameDic[typeof(byte?)] = "byte?";
+                ScalarTypeNameDic[typeof(sbyte)] = "sbyte";
+                ScalarTypeNameDic[typeof(sbyte?)] = "sbyte?";
+                ScalarTypeNameDic[typeof(uint)] = "uint";
+                ScalarTypeNameDic[typeof(uint?)] = "uint?";
+                ScalarTypeNameDic[typeof(ulong)] = "ulong";
+                ScalarTypeNameDic[typeof(ulong?)] = "ulong?";
+                ScalarTypeNameDic[typeof(ushort)] = "ushort";
+                ScalarTypeNameDic[typeof(ushort?)] = "ushort?";
+                ScalarTypeNameDic[typeof(bool)] = "bool";
+                ScalarTypeNameDic[typeof(bool?)] = "bool?";
+                ScalarTypeNameDic[typeof(byte[])] = "byte[]";
+                ScalarTypeNameDic[typeof(System.Guid)] = "Guid";
+                ScalarTypeNameDic[typeof(System.DateTime)] = "DateTime";
             }
-            else if (coltype == typeof(char))
+
+            if (ScalarTypeNameDic.ContainsKey(type))
             {
-                return "char";
+                string dn = ScalarTypeNameDic[type];
+                return dn;
             }
-            else if (coltype == typeof(float))
+
+            if (type.IsGenericType)
             {
-                return "float";
+                var tokens = type.FullName.Split('`');
+
+                if (tokens[0].StartsWith("Microsoft.Analytics.Types.Sql."))
+                {
+                    var tokens2 = tokens[0].Split('.');
+                    string name = tokens2[tokens2.Length - 1];
+                    ScalarTypeNameDic[type] = name;
+                    return name;
+                }
             }
-            else if (coltype == typeof(double))
-            {
-                return "double";
-            }
-            else if (coltype == typeof(int))
-            {
-                return "int";
-            }
-            else if (coltype == typeof(long))
-            {
-                return "long";
-            }
-            else if (coltype == typeof(System.Guid))
-            {
-                return "Guid";
-            }
-            else if (coltype == typeof(int?))
-            {
-                return "int?";
-            }
-            else if (coltype == typeof(long?))
-            {
-                return "long?";
-            }
-            else if (coltype == typeof(float?))
-            {
-                return "float?";
-            }
-            else if (coltype == typeof(double?))
-            {
-                return "double?";
-            }
-            else
-            {
-                return coltype.Name.Replace("`", "-");
-            }
+            return "UNKNOWNTYPE";
         }
 
-        public static string GetValueDisplayString(Microsoft.Analytics.Interfaces.IRow row, Type coltype, string val, Microsoft.Analytics.Interfaces.IColumn col, bool _ComplexTypeParameters)
+        public static Dictionary<Type, string> ScalarTypeNameDic;
+        public static string GetValueDisplayString(Microsoft.Analytics.Interfaces.IRow row, Type type, string val, Microsoft.Analytics.Interfaces.IColumn col, bool _ComplexTypeParameters)
         {
-            if (coltype == typeof(string))
+            if (type == typeof(string))
             {
-                val = row.Get<string>(col.Name);
-                val = val ?? "NULL";
+                val = row.Get<string>(col.Name) ?? "NULL";
             }
-            else if (coltype == typeof(bool))
+            else if (type == typeof(bool))
             {
                 val = row.Get<bool>(col.Name).ToString();
             }
-            else if (coltype == typeof(char))
+            else if (type == typeof(char))
             {
                 val = row.Get<char>(col.Name).ToString();
             }
-            else if (coltype == typeof(float))
+            else if (type == typeof(float))
             {
                 val = row.Get<float>(col.Name).ToString();
             }
-            else if (coltype == typeof(double))
+            else if (type == typeof(double))
             {
                 val = row.Get<double>(col.Name).ToString();
             }
-            else if (coltype == typeof(int))
+            else if (type == typeof(int))
             {
                 val = row.Get<int>(col.Name).ToString();
             }
-            else if (coltype == typeof(long))
+            else if (type == typeof(long))
             {
                 val = row.Get<long>(col.Name).ToString();
             }
-            else if (coltype == typeof(System.Guid))
+            else if (type == typeof(System.Guid))
             {
                 val = row.Get<System.Guid>(col.Name).ToString();
             }
-            else if (coltype == typeof(int?))
+            else if (type == typeof(int?))
             {
-                val = row.Get<int?>(col.Name).ToString();
-                val = val ?? "NULL";
+                val = row.Get<int?>(col.Name).ToString() ?? "NULL";
             }
-            else if (coltype == typeof(long?))
+            else if (type == typeof(long?))
             {
-                val = row.Get<long?>(col.Name).ToString();
-                val = val ?? "NULL";
+                val = row.Get<long?>(col.Name).ToString() ?? "NULL";
             }
-            else if (coltype == typeof(float?))
+            else if (type == typeof(float?))
             {
-                val = row.Get<float?>(col.Name).ToString();
-                val = val ?? "NULL";
+                val = row.Get<float?>(col.Name).ToString() ?? "NULL";
             }
-            else if (coltype == typeof(double?))
+            else if (type == typeof(double?))
             {
-                val = row.Get<double?>(col.Name).ToString();
-                val = val ?? "NULL";
+                val = row.Get<double?>(col.Name).ToString() ?? "NULL";
             }
-            else if (coltype == typeof(Microsoft.Analytics.Types.Sql.SqlArray<string>))
+            else if (type.IsGenericType)
             {
-                val = _Get_val_from_usqlarray<string>(row, col, val, _ComplexTypeParameters);
-            }
-            else if (coltype == typeof(Microsoft.Analytics.Types.Sql.SqlArray<char>))
-            {
-                val = _Get_val_from_usqlarray<char>(row, col, val, _ComplexTypeParameters);
-            }
-            else if (coltype == typeof(Microsoft.Analytics.Types.Sql.SqlArray<int>))
-            {
-                val = _Get_val_from_usqlarray<int>(row, col, val, _ComplexTypeParameters);
-            }
-            else if (coltype == typeof(Microsoft.Analytics.Types.Sql.SqlArray<long>))
-            {
-                val = _Get_val_from_usqlarray<long>(row, col, val, _ComplexTypeParameters);
-            }
-            else if (coltype == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, string>))
-            {
-                val = _Get_val_from_usqlmap<string, string>(row, col, val, _ComplexTypeParameters);
-            }
-            else if (coltype == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, bool?>))
-            {
-                val = _Get_val_from_usqlmap<string, bool?>(row, col, val, _ComplexTypeParameters);
-            }
-            else if (coltype == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, char?>))
-            {
-                val = _Get_val_from_usqlmap<string, char?>(row, col, val, _ComplexTypeParameters);
-            }
-            else if (coltype == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, int?>))
-            {
-                val = _Get_val_from_usqlmap<string, int?>(row, col, val, _ComplexTypeParameters);
-            }
-            else if (coltype == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, long?>))
-            {
-                val = _Get_val_from_usqlmap<string, long?>(row, col, val, _ComplexTypeParameters);
+                if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<string>))
+                {
+                    val = GetValueFromUsqlArray<string>(row, col, val, _ComplexTypeParameters);
+                }
+                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<char>))
+                {
+                    val = GetValueFromUsqlArray<char>(row, col, val, _ComplexTypeParameters);
+                }
+                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<int>))
+                {
+                    val = GetValueFromUsqlArray<int>(row, col, val, _ComplexTypeParameters);
+                }
+                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<long>))
+                {
+                    val = GetValueFromUsqlArray<long>(row, col, val, _ComplexTypeParameters);
+                }
+                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, string>))
+                {
+                    val = GetValueFromUsqlMap<string, string>(row, col, val, _ComplexTypeParameters);
+                }
+                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, bool?>))
+                {
+                    val = GetValueFromUsqlMap<string, bool?>(row, col, val, _ComplexTypeParameters);
+                }
+                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, char?>))
+                {
+                    val = GetValueFromUsqlMap<string, char?>(row, col, val, _ComplexTypeParameters);
+                }
+                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, int?>))
+                {
+                    val = GetValueFromUsqlMap<string, int?>(row, col, val, _ComplexTypeParameters);
+                }
+                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, long?>))
+                {
+                    val = GetValueFromUsqlMap<string, long?>(row, col, val, _ComplexTypeParameters);
+                }
+                else
+                {
+                    val = "UNKNOWNTYPE:" + UdoUtils.GetUsqlTypeDisplayName(type);
+                }
             }
             else
             {
-                val = "UNKNOWNTYPE:" + UdoUtils.get_usql_type_name(coltype);
+                val = "UNKNOWNTYPE:" + UdoUtils.GetUsqlTypeDisplayName(type);
             }
             return val;
         }
 
-        public static string _Get_val_from_usqlarray<T>(Microsoft.Analytics.Interfaces.IRow row, Microsoft.Analytics.Interfaces.IColumn col, string val, bool _ComplexTypeParameters)
+        public static string GetValueFromUsqlArray<T>(Microsoft.Analytics.Interfaces.IRow row, Microsoft.Analytics.Interfaces.IColumn col, string val, bool _ComplexTypeParameters)
         {
             var arr = row.Get<Microsoft.Analytics.Types.Sql.SqlArray<T>>(col.Name);
 
@@ -165,7 +174,7 @@ namespace MarkdownFormat
                 if (_ComplexTypeParameters)
                 {
                     sb.Append("<");
-                    sb.Append(UdoUtils.get_usql_type_name(typeof(T)));
+                    sb.Append(UdoUtils.GetUsqlTypeDisplayName(typeof(T)));
                     sb.Append(">");
                 }
                 sb.Append("{ ");
@@ -192,7 +201,7 @@ namespace MarkdownFormat
             return val;
         }
 
-        public static string _Get_val_from_usqlmap<K, V>(Microsoft.Analytics.Interfaces.IRow row, Microsoft.Analytics.Interfaces.IColumn col, string val, bool _ComplexTypeParameters)
+        public static string GetValueFromUsqlMap<K, V>(Microsoft.Analytics.Interfaces.IRow row, Microsoft.Analytics.Interfaces.IColumn col, string val, bool _ComplexTypeParameters)
         {
             var map = row.Get<Microsoft.Analytics.Types.Sql.SqlMap<K, V>>(col.Name);
 
@@ -203,9 +212,9 @@ namespace MarkdownFormat
                 if (_ComplexTypeParameters)
                 {
                     sb.Append("<");
-                    sb.Append(UdoUtils.get_usql_type_name(typeof(K)));
+                    sb.Append(UdoUtils.GetUsqlTypeDisplayName(typeof(K)));
                     sb.Append(", ");
-                    sb.Append(UdoUtils.get_usql_type_name(typeof(V)));
+                    sb.Append(UdoUtils.GetUsqlTypeDisplayName(typeof(V)));
                     sb.Append(">");
                 }
                 sb.Append("{ ");
@@ -241,5 +250,21 @@ namespace MarkdownFormat
             return val;
         }
 
+        private static void test<T>(string left)
+        {
+            string actual_left = GetUsqlTypeDisplayName(typeof(T));
+            if (left != actual_left)
+            {
+                throw new System.ArgumentOutOfRangeException("Incorrect type display");
+            }
+        }
+
+        public static void TestTypeNames()
+        {
+            test<int>("int");
+            test<int?>("int?");
+            test<SqlArray<int>>("SqlArray");
+            test<SqlArray<double>>("SqlArray");
+        }
     }
 }

@@ -51,7 +51,7 @@ namespace MarkdownFormat
                         streamWriter.Write(this._Space);
                         if (this.OutputHeaderType)
                         {
-                            streamWriter.Write(UdoUtils.get_usql_type_name(col.Type));
+                            streamWriter.Write(UdoUtils.GetUsqlTypeDisplayName(col.Type));
                             streamWriter.Write(this._Space);
                         }
                         streamWriter.Write(this._FieldSeparator);
