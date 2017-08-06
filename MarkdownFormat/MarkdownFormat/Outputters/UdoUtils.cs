@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Analytics.Interfaces;
 using Microsoft.Analytics.Types.Sql;
 
 namespace MarkdownFormat
@@ -59,11 +60,11 @@ namespace MarkdownFormat
                     return name;
                 }
             }
-            return "UNKNOWNTYPE";
+            return "UNKNOWNTYPE:" + type.FullName;
         }
 
         public static Dictionary<Type, string> ScalarTypeNameDic;
-        public static string GetValueDisplayString(Microsoft.Analytics.Interfaces.IRow row, Type type, string val, Microsoft.Analytics.Interfaces.IColumn col, bool _ComplexTypeParameters)
+        public static string GetValueDisplayString(Microsoft.Analytics.Interfaces.IRow row, Type type, string val, Microsoft.Analytics.Interfaces.IColumn col, TypeDisplayNameOptions opts)
         {
             if (type == typeof(string))
             {
@@ -115,43 +116,14 @@ namespace MarkdownFormat
             }
             else if (type.IsGenericType)
             {
-                if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<string>))
+                val = GetValueFromUsqlArray_(row, type, col, opts);
+
+                if (val == null)
                 {
-                    val = GetValueFromUsqlArray<string>(row, col, val, _ComplexTypeParameters);
+                    val = GetValueFromUsqlMap_(row, type, col, opts);
                 }
-                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<char>))
-                {
-                    val = GetValueFromUsqlArray<char>(row, col, val, _ComplexTypeParameters);
-                }
-                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<int>))
-                {
-                    val = GetValueFromUsqlArray<int>(row, col, val, _ComplexTypeParameters);
-                }
-                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<long>))
-                {
-                    val = GetValueFromUsqlArray<long>(row, col, val, _ComplexTypeParameters);
-                }
-                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, string>))
-                {
-                    val = GetValueFromUsqlMap<string, string>(row, col, val, _ComplexTypeParameters);
-                }
-                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, bool?>))
-                {
-                    val = GetValueFromUsqlMap<string, bool?>(row, col, val, _ComplexTypeParameters);
-                }
-                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, char?>))
-                {
-                    val = GetValueFromUsqlMap<string, char?>(row, col, val, _ComplexTypeParameters);
-                }
-                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, int?>))
-                {
-                    val = GetValueFromUsqlMap<string, int?>(row, col, val, _ComplexTypeParameters);
-                }
-                else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, long?>))
-                {
-                    val = GetValueFromUsqlMap<string, long?>(row, col, val, _ComplexTypeParameters);
-                }
-                else
+
+                if (val==null)
                 {
                     val = "UNKNOWNTYPE:" + UdoUtils.GetUsqlTypeDisplayName(type);
                 }
@@ -163,7 +135,161 @@ namespace MarkdownFormat
             return val;
         }
 
-        public static string GetValueFromUsqlArray<T>(Microsoft.Analytics.Interfaces.IRow row, Microsoft.Analytics.Interfaces.IColumn col, string val, bool _ComplexTypeParameters)
+        private static string GetValueFromUsqlMap_(IRow row, Type type, IColumn col, TypeDisplayNameOptions opts)
+        {
+            string val = null;
+
+            if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, string>))
+            {
+                val = GetValueFromUsqlMap<string, string>(row, col, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, bool?>))
+            {
+                val = GetValueFromUsqlMap<string, bool?>(row, col, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, char?>))
+            {
+                val = GetValueFromUsqlMap<string, char?>(row, col, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, int?>))
+            {
+                val = GetValueFromUsqlMap<string, int?>(row, col, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlMap<string, long?>))
+            {
+                val = GetValueFromUsqlMap<string, long?>(row, col, opts);
+            }
+            return val;
+        }
+
+        private static string GetValueFromUsqlArray_(IRow row, Type type, IColumn col, TypeDisplayNameOptions opts)
+        {
+            string val = null;
+
+            if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<string>))
+            {
+                val = GetValueFromUsqlArray<string>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<char>))
+            {
+                val = GetValueFromUsqlArray<char>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<char?>))
+            {
+                val = GetValueFromUsqlArray<char?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<int>))
+            {
+                val = GetValueFromUsqlArray<int>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<int?>))
+            {
+                val = GetValueFromUsqlArray<int?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<long>))
+            {
+                val = GetValueFromUsqlArray<long>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<long?>))
+            {
+                val = GetValueFromUsqlArray<long?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<float>))
+            {
+                val = GetValueFromUsqlArray<float>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<float?>))
+            {
+                val = GetValueFromUsqlArray<float?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<decimal>))
+            {
+                val = GetValueFromUsqlArray<decimal>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<decimal?>))
+            {
+                val = GetValueFromUsqlArray<decimal?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<double>))
+            {
+                val = GetValueFromUsqlArray<double>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<double?>))
+            {
+                val = GetValueFromUsqlArray<double?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<byte>))
+            {
+                val = GetValueFromUsqlArray<byte>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<byte?>))
+            {
+                val = GetValueFromUsqlArray<byte?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<sbyte>))
+            {
+                val = GetValueFromUsqlArray<sbyte>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<sbyte?>))
+            {
+                val = GetValueFromUsqlArray<sbyte?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<uint>))
+            {
+                val = GetValueFromUsqlArray<uint>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<uint?>))
+            {
+                val = GetValueFromUsqlArray<uint?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<ulong>))
+            {
+                val = GetValueFromUsqlArray<ulong>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<ulong?>))
+            {
+                val = GetValueFromUsqlArray<ulong?>(row, col, val, opts);
+            }
+
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<ushort>))
+            {
+                val = GetValueFromUsqlArray<ushort>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<ushort?>))
+            {
+                val = GetValueFromUsqlArray<ushort?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<bool>))
+            {
+                val = GetValueFromUsqlArray<bool>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<bool?>))
+            {
+                val = GetValueFromUsqlArray<bool?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<DateTime>))
+            {
+                val = GetValueFromUsqlArray<DateTime>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<DateTime?>))
+            {
+                val = GetValueFromUsqlArray<DateTime?>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<Guid>))
+            {
+                val = GetValueFromUsqlArray<Guid>(row, col, val, opts);
+            }
+            else if (type == typeof(Microsoft.Analytics.Types.Sql.SqlArray<Guid?>))
+            {
+                val = GetValueFromUsqlArray<Guid?>(row, col, val, opts);
+            }
+            else
+            {
+            }
+            return val;
+        }
+
+        public static string GetValueFromUsqlArray<T>(Microsoft.Analytics.Interfaces.IRow row, Microsoft.Analytics.Interfaces.IColumn col, string val, TypeDisplayNameOptions opts)
         {
             var arr = row.Get<Microsoft.Analytics.Types.Sql.SqlArray<T>>(col.Name);
 
@@ -171,7 +297,7 @@ namespace MarkdownFormat
             {
                 var sb = new System.Text.StringBuilder();
                 sb.Append("SqlArray");
-                if (_ComplexTypeParameters)
+                if (opts.ShowGenericParameters)
                 {
                     sb.Append("<");
                     sb.Append(UdoUtils.GetUsqlTypeDisplayName(typeof(T)));
@@ -201,15 +327,17 @@ namespace MarkdownFormat
             return val;
         }
 
-        public static string GetValueFromUsqlMap<K, V>(Microsoft.Analytics.Interfaces.IRow row, Microsoft.Analytics.Interfaces.IColumn col, string val, bool _ComplexTypeParameters)
+        public static string GetValueFromUsqlMap<K, V>(Microsoft.Analytics.Interfaces.IRow row, Microsoft.Analytics.Interfaces.IColumn col, TypeDisplayNameOptions opts)
         {
+            string val = null;
+
             var map = row.Get<Microsoft.Analytics.Types.Sql.SqlMap<K, V>>(col.Name);
 
             if (map != null)
             {
                 var sb = new System.Text.StringBuilder();
                 sb.Append("SqlMap");
-                if (_ComplexTypeParameters)
+                if (opts.ShowGenericParameters)
                 {
                     sb.Append("<");
                     sb.Append(UdoUtils.GetUsqlTypeDisplayName(typeof(K)));
@@ -265,6 +393,7 @@ namespace MarkdownFormat
             test<int?>("int?");
             test<SqlArray<int>>("SqlArray");
             test<SqlArray<double>>("SqlArray");
+            test<SqlMap<string,string>>("SqlMap");
         }
     }
 }

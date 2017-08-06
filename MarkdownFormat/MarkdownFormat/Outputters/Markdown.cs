@@ -37,6 +37,7 @@ namespace MarkdownFormat
             // Metadata schema initialization to enumerate column names
             var schema = row.Schema;
 
+            var opts = new TypeDisplayNameOptions();
 
             if (this.row_count == 0)
             {
@@ -83,7 +84,7 @@ namespace MarkdownFormat
                 try
                 {
                     var coltype = col.Type;
-                    val = UdoUtils.GetValueDisplayString(row, coltype, val, col, this.ComplexTypeParameters);
+                    val = UdoUtils.GetValueDisplayString(row, coltype, val, col, opts);
                 }
                 catch (System.NullReferenceException exc)
                 {
