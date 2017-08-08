@@ -43,11 +43,11 @@ namespace MarkdownFormat
             }
             else if (type == typeof(float))
             {
-                val = row.Get<float>(col.Name).ToString();
+                val = row.Get<float>(col.Name).ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
             else if (type == typeof(double))
             {
-                val = row.Get<double>(col.Name).ToString();
+                val = row.Get<double>(col.Name).ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
             else if (type == typeof(int))
             {
