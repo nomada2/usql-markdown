@@ -46,6 +46,7 @@
     <Compile Include="Outputters\Extensions.cs" />
     <Compile Include="Outputters\Markdown.cs" />
     <Compile Include="Outputters\TypeDisplayNameOptions.cs" />
+    <Compile Include="Outputters\TypeNameCache.cs" />
     <Compile Include="Outputters\UdoUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

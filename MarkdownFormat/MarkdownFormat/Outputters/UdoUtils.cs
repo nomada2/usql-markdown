@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.Analytics.Interfaces;
 using Microsoft.Analytics.Types.Sql;
 
@@ -7,69 +6,32 @@ namespace MarkdownFormat
 {
     public static class UdoUtils
     {
+        public static TypeNameCache TypeNameDic;
+        private static string _LESSTHAN = "<";
+        private static string _GREATERTHAN = ">";
+        private static string _DOUBLEQUOTE = "\"";
+        private static string _SPACE = " ";
+        private static string _LEFTCURLYBRACE = "{";
+        private static string _RIGHTCURLYBRACE = "}";
+        private static string _COMMA = ",";
+        private static string _SEMICOLON = ";";
+        private static string _NULL = "NULL";
+
         public static string GetUsqlTypeDisplayName(System.Type type)
         {
-            if (ScalarTypeNameDic == null)
+            if (TypeNameDic == null)
             {
-                ScalarTypeNameDic = new Dictionary<Type, string>();
-                ScalarTypeNameDic[typeof(string)] = "string";
-                ScalarTypeNameDic[typeof(char)] = "char";
-                ScalarTypeNameDic[typeof(char?)] = "char?";
-                ScalarTypeNameDic[typeof(float)] = "float";
-                ScalarTypeNameDic[typeof(float?)] = "float?";
-                ScalarTypeNameDic[typeof(double)] = "double";
-                ScalarTypeNameDic[typeof(double?)] = "double?";
-                ScalarTypeNameDic[typeof(decimal)] = "decimal";
-                ScalarTypeNameDic[typeof(decimal?)] = "decimal?";
-                ScalarTypeNameDic[typeof(int)] = "int";
-                ScalarTypeNameDic[typeof(int?)] = "int?";
-                ScalarTypeNameDic[typeof(short)] = "short";
-                ScalarTypeNameDic[typeof(short?)] = "short?";
-                ScalarTypeNameDic[typeof(byte)] = "byte";
-                ScalarTypeNameDic[typeof(byte?)] = "byte?";
-                ScalarTypeNameDic[typeof(sbyte)] = "sbyte";
-                ScalarTypeNameDic[typeof(sbyte?)] = "sbyte?";
-                ScalarTypeNameDic[typeof(uint)] = "uint";
-                ScalarTypeNameDic[typeof(uint?)] = "uint?";
-                ScalarTypeNameDic[typeof(ulong)] = "ulong";
-                ScalarTypeNameDic[typeof(ulong?)] = "ulong?";
-                ScalarTypeNameDic[typeof(ushort)] = "ushort";
-                ScalarTypeNameDic[typeof(ushort?)] = "ushort?";
-                ScalarTypeNameDic[typeof(bool)] = "bool";
-                ScalarTypeNameDic[typeof(bool?)] = "bool?";
-                ScalarTypeNameDic[typeof(byte[])] = "byte[]";
-                ScalarTypeNameDic[typeof(System.Guid)] = "Guid";
-                ScalarTypeNameDic[typeof(System.DateTime)] = "DateTime";
+                TypeNameDic = new TypeNameCache();
             }
 
-            if (ScalarTypeNameDic.ContainsKey(type))
-            {
-                string dn = ScalarTypeNameDic[type];
-                return dn;
-            }
-
-            if (type.IsGenericType)
-            {
-                var tokens = type.FullName.Split('`');
-
-                if (tokens[0].StartsWith("Microsoft.Analytics.Types.Sql."))
-                {
-                    var tokens2 = tokens[0].Split('.');
-                    string name = tokens2[tokens2.Length - 1];
-                    ScalarTypeNameDic[type] = name;
-                    return name;
-                }
-            }
-
-            return type.FullName;
+            return TypeNameDic.GetDisplayName(type);
         }
 
-        public static Dictionary<Type, string> ScalarTypeNameDic;
         public static string GetValueDisplayString(Microsoft.Analytics.Interfaces.IRow row, Type type, string val, Microsoft.Analytics.Interfaces.IColumn col, TypeDisplayNameOptions opts)
         {
             if (type == typeof(string))
             {
-                val = row.Get<string>(col.Name) ?? "NULL";
+                val = row.Get<string>(col.Name) ?? _NULL;
             }
             else if (type == typeof(bool))
             {
@@ -101,19 +63,19 @@ namespace MarkdownFormat
             }
             else if (type == typeof(int?))
             {
-                val = row.Get<int?>(col.Name).ToString() ?? "NULL";
+                val = row.Get<int?>(col.Name).ToString();
             }
             else if (type == typeof(long?))
             {
-                val = row.Get<long?>(col.Name).ToString() ?? "NULL";
+                val = row.Get<long?>(col.Name).ToString();
             }
             else if (type == typeof(float?))
             {
-                val = row.Get<float?>(col.Name).ToString() ?? "NULL";
+                val = row.Get<float?>(col.Name).ToString();
             }
             else if (type == typeof(double?))
             {
-                val = row.Get<double?>(col.Name).ToString() ?? "NULL";
+                val = row.Get<double?>(col.Name).ToString();
             }
             else if (type.IsGenericType)
             {
@@ -312,25 +274,29 @@ namespace MarkdownFormat
                 sb.Append("SqlArray");
                 if (opts.ShowGenericParameters)
                 {
-                    sb.Append("<");
+                    sb.Append(_LESSTHAN);
                     sb.Append(UdoUtils.GetUsqlTypeDisplayName(typeof(T)));
-                    sb.Append(">");
+                    sb.Append(_GREATERTHAN);
                 }
-                sb.Append("{ ");
+                sb.Append(_LEFTCURLYBRACE);
+                sb.Append(_SPACE);
 
                 for (int j = 0; j < arr.Count; j++)
                 {
                     if (j > 0)
                     {
-                        sb.Append(", ");
+                        sb.Append(_COMMA);
+                        sb.Append(_SPACE);
                     }
 
-                    sb.Append("\"");
+                    sb.Append(_DOUBLEQUOTE);
                     sb.Append(arr[j].ToString());
-                    sb.Append("\"");
+                    sb.Append(_DOUBLEQUOTE);
                 }
 
-                sb.Append(" }");
+                sb.Append(_SPACE);
+                sb.Append(_RIGHTCURLYBRACE);
+
                 val = sb.ToString();
             }
             else
@@ -352,22 +318,23 @@ namespace MarkdownFormat
                 sb.Append("SqlMap");
                 if (opts.ShowGenericParameters)
                 {
-                    sb.Append("<");
+                    sb.Append(_LESSTHAN);
                     sb.Append(UdoUtils.GetUsqlTypeDisplayName(typeof(K)));
-                    sb.Append(",");
-                    sb.Append(" ");
+                    sb.Append(_COMMA);
+                    sb.Append(_SPACE);
                     sb.Append(UdoUtils.GetUsqlTypeDisplayName(typeof(V)));
-                    sb.Append(">");
+                    sb.Append(_GREATERTHAN);
                 }
-                sb.Append("{ ");
+                sb.Append(_LEFTCURLYBRACE);
+                sb.Append(_SPACE);
 
                 int kn = 0;
                 foreach (var key in map.Keys)
                 {
                     if (kn > 0)
                     {
-                        sb.Append(";");
-                        sb.Append(" ");
+                        sb.Append(_SEMICOLON);
+                        sb.Append(_SPACE);
                     }
 
                     V xval = map[key];
@@ -382,8 +349,8 @@ namespace MarkdownFormat
 
                     kn++;
                 }
-
-                sb.Append(" }");
+                sb.Append(_SPACE);
+                sb.Append(_RIGHTCURLYBRACE);
                 val = sb.ToString();
             }
             else
