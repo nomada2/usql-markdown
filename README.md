@@ -25,13 +25,13 @@ REFERENCE ASSEMBLY [master].MarkdownFormat; // This assumes you've registered th
   
 OUTPUT @querylog
     TO "/querylog.md"
-    USING new MarkdownFormat.MarkdownOutputter(outputHeader: true, outputHeaderType: true);
+    USING new MarkdownFormat.MarkdownOutputter(outputHeader: true);
 ```
 
 he output file will look like this:
 
 ```
-| Query string | Latency int | Vertical string |
+| Query | Latency | Vertical |
 | --- | --- | --- |
 | Banana | 300 | Image |
 | Cherry | 300 | Image |
@@ -46,7 +46,7 @@ he output file will look like this:
 
 Which is displayed like this:
 
-| Query string | Latency int | Vertical string |
+| Query | Latency | Vertical |
 | --- | --- | --- |
 | Banana | 300 | Image |
 | Cherry | 300 | Image |
