@@ -28,7 +28,7 @@ OUTPUT @querylog
     USING new MarkdownFormat.MarkdownOutputter(outputHeader: true);
 ```
 
-he output file will look like this:
+the output file `querylog.md` will look like this:
 
 ```
 | Query | Latency | Vertical |
