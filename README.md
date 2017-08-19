@@ -4,7 +4,60 @@ platforms: dotnet
 author: saveenr-msft
 ---
 
-# U-SQL: Markdown format outputter
+# U-SQL: Markdown outputter
+
+This U-SQL Outputter will take a rowset and emit it as a markdown document.
+
+```
+REFERENCE ASSEMBLY [master].MarkdownFormat; // This assumes you've registered the assembly into the master db
+@querylog =
+  SELECT * FROM ( VALUES
+  ("Banana" , 300, "Image" ),
+  ("Cherry" , 300, "Image" ),
+  ("Durian" , 500, "Image" ),
+  ("Apple" , 100, "Web" ),
+  ("Fig" , 200, "Web" ),
+  ("Papaya" , 200, "Web" ),
+  ("Avocado" , 300, "Web" ),
+  ("Cherry" , 400, "Web" ),
+  ("Durian" , 500, "Web" ) )
+  AS T(Query,Latency,Vertical);  
+  
+OUTPUT @querylog
+    TO "/querylog.md"
+    USING new MarkdownFormat.MarkdownOutputter(outputHeader: true, outputHeaderType: true);
+```
+
+he output file will look like this:
+
+```
+| Query string | Latency int | Vertical string |
+| --- | --- | --- |
+| Banana | 300 | Image |
+| Cherry | 300 | Image |
+| Durian | 500 | Image |
+| Apple | 100 | Web |
+| Fig | 200 | Web |
+| Papaya | 200 | Web |
+| Avocado | 300 | Web |
+| Cherry | 400 | Web |
+| Durian | 500 | Web |
+```
+
+Which is displayed like this:
+
+| Query string | Latency int | Vertical string |
+| --- | --- | --- |
+| Banana | 300 | Image |
+| Cherry | 300 | Image |
+| Durian | 500 | Image |
+| Apple | 100 | Web |
+| Fig | 200 | Web |
+| Papaya | 200 | Web |
+| Avocado | 300 | Web |
+| Cherry | 400 | Web |
+| Durian | 500 | Web |
+
 
 # Contributing
 
