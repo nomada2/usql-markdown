@@ -1,18 +1,24 @@
 ﻿REFERENCE ASSEMBLY [master].MarkdownFormat;
 
-@querylog =
-  SELECT * FROM ( VALUES
-  ("Banana" , 300, "Image" ),
-  ("Cherry" , 300, "Image" ),
-  ("Durian" , 500, "Image" ),
-  ("Apple" , 100, "Web" ),
-  ("Fig" , 200, "Web" ),
-  ("Papaya" , 200, "Web" ),
-  ("Avocado" , 300, "Web" ),
-  ("Cherry" , 400, "Web" ),
-  ("Durian" , 500, "Web" ) )
-  AS T(Query,Latency,Vertical);  
+@cities =
+    SELECT * 
+    FROM
+    ( VALUES
+        ( "Vermont","Burlington,Essex,South,Burlington,Colchester,Rutland" ),
+        ( "Virginia","Virginia Beach,Norfolk,Chesapeake,Richmond,Newport News" ),
+        ( "Washington","Seattle,Spokane,Tacoma,Vancouver,Bellevue" ),
+        ( "West Virginia", "Charleston,Huntington,Parkersburg,Morgantown,Wheeling"),
+        ( "Wisconsin","Milwaukee,Madison,Green Bay,Kenosha,Racine"),
+        ( "Wyoming","Cheyenne,Casper,Laramie,Gillette,Rock Springs" )
+    ) AS T(State, Cities);
+
+@cities =
+    SELECT 
+        State,
+        SqlArray.Create( Cities.Split(',') ) AS Cities 
+    FROM @cities;
+
   
-OUTPUT @querylog
-    TO "/querylog.md"
-    USING new MarkdownFormat.MarkdownOutputter(outputHeader: true, outputHeaderType: true);
+OUTPUT @cities
+    TO "/output.md"
+    USING new MarkdownFormat.MarkdownOutputter(outputHeader: true);
