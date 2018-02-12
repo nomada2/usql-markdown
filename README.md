@@ -4,7 +4,7 @@ platforms: dotnet
 author: saveenr-msft
 ---
 
-# U-SQL: Markdown outputter
+# U-SQL Markdown outputter
 
 This U-SQL Outputter will take a rowset and emit it as a markdown document.
 
